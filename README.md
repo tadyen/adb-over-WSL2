@@ -9,22 +9,31 @@ Make sure it's the exact same `adb.exe` that you'd normally be using in your Win
 
 #### Old method (adb in linux)
 You've decided to use the linux version of `adb` in your WS(for)Linux2.
+
 1. Ensure compatible / same versions of adb
+
 2. Open any WSL2 instance to start the WSL machine
+
 3. In Powershell (as Admin), perform the following:
 
   🔹 `Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"`
+
 4. Open 2 terminals, one in Windows, the other in WSL2
+
 5. On Windows, perform the following:
 
   🔹 `adb -a -P 5037 nodaemon server`
+
 6. [*Optional*] On WSL, find IPv4 and verify connection
+
   `adb -H $(cat /etc/resolv.conf | awk '/nameserver/ {print $2}') -P 5037 devices`
+
 7. On WSL, add the adb server socket:
 
   🔹 `export ADB_SERVER_SOCKET=tcp:$(cat /etc/resolv.conf | awk '/nameserver/ {print $2}'):5037`
 
   [*Optionally*]  append above to .bashrc
+
 8. Done.
 
 <!---  asdf --->
