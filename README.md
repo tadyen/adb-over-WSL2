@@ -4,6 +4,7 @@
 
 #### New method (adb.exe)
 Just use `adb.exe` instead of `adb`. 
+
 Make sure it's the exact same `adb.exe` that you'd normally be using in your Windows host.
 
 #### Old method (adb in linux)
@@ -11,14 +12,18 @@ You've decided to use the linux version of `adb` in your WS(for)Linux2.
 1. Ensure compatible / same versions of adb
 2. Open any WSL2 instance to start the WSL machine
 3. In Powershell (as Admin), perform the following:
+
   🔹 `Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"`
 4. Open 2 terminals, one in Windows, the other in WSL2
 5. On Windows, perform the following:
+
   🔹 `adb -a -P 5037 nodaemon server`
 6. [*Optional*] On WSL, find IPv4 and verify connection
   `adb -H $(cat /etc/resolv.conf | awk '/nameserver/ {print $2}') -P 5037 devices`
 7. On WSL, add the adb server socket:
+
   🔹 `export ADB_SERVER_SOCKET=tcp:$(cat /etc/resolv.conf | awk '/nameserver/ {print $2}'):5037`
+
   [*Optionally*]  append above to .bashrc
 8. Done.
 
@@ -29,7 +34,7 @@ You've decided to use the linux version of `adb` in your WS(for)Linux2.
 ## Problem:
 ***Why does my device not show up in my WSL2 instance?***
 
-<img src="media/problem.png" height="360">
+<img src="media/problem.png" width="860">
 
 tags:
 - wsl adb no usb devices
@@ -40,7 +45,8 @@ tags:
 - connection to WSL for Android device unstable
 
 ## Solution:
-Simply run `> adb.exe` instead of `> adb`. (if the path environment variable is set).
+Simply run `> adb.exe` instead of `> adb` (if the path environment variable is set).
+
 Otherwise cd to the dir containing `adb.exe` and run `> ./adb.exe`  
 
 <img src="media/adb-exe.png" height="360">
@@ -118,6 +124,7 @@ Ensure you run powershell as **Administrator** if you wish to avoid this:
 <img src="media/powershell-fail.png" height="360">
 
 Run the following command (to remove firewall):
+
 🔹  `Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"`
 
 You will need to do this step ***everytime*** you reboot your windows system unless you script this.
@@ -126,7 +133,8 @@ You will need to do this step ***everytime*** you reboot your windows system unl
 
 #### Optional - Running PS script on startup:
 You could have a `.ps1` file with the command above set to run on startup. 
-Simply create a shortcut to your `.ps1` file and place it in (replace `<YOUR_USER>`): 
+Simply create a shortcut to your `.ps1` file and place it in (replace `<YOUR_USER>`):
+
 `C:\Users\<YOUR_USER>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`
 
 You can also find this folder by `Win + R` and typing in `shell:startup`
@@ -160,6 +168,7 @@ Terminal feels closer/similar to terminals in *NIX systems and looks much cleane
 <img src="media/failure-nodaemon-server.png" width="720">
 
 Then run the following on Windows side:
+
 `adb kill-server`
 
 Then re-attempt  the above.
@@ -190,9 +199,11 @@ $ echo $(cat /etc/resolv.conf | awk '/nameserver/ {print $2}')
 ```
 
 To verify the above has worked, you can run the following:
+
 `adb -H <YOUR.WSL2.IPv4.ADDR> -P 5037 devices`
 
 or just copy paste this instead
+
 `adb -H $(cat /etc/resolv.conf | awk '/nameserver/ {print $2}') -P 5037 devices`
 
 and you should see your device connected:
@@ -208,19 +219,27 @@ Or use this instead:
 
 🔹 `export ADB_SERVER_SOCKET=tcp:$(cat /etc/resolv.conf | awk '/nameserver/ {print $2}'):5037`
 
-**VERY USEFUL OPTIONAL** - Add the above into .bashrc inside WSL2 environment to avoid repeating it on every WSL2 instance
-
-.bashrc chmod defaults on 644 (rw-r--r--). You may need to chmod 666 this file prior to editting it.
-Add the line above inside .bashrc using your preferred editor
-`export ADB_SERVER_SOCKET=tcp:$(cat /etc/resolv.conf | awk '/nameserver/ {print $2}'):5037`
-
-
- **DO NOT** replace the file. Simply append to the end of .bashrc
+**VERY USEFUL OPTIONAL** - Add the above into `~/.bashrc` inside WSL2 environment to avoid repeating it on every WSL2 instance
 
 *Where and what is inside .bashrc? Perform following:*
 `cat ~/.bashrc` 
 
 .bashrc is a shell script that runs on start-up in the *nix environment.
+
+.bashrc chmod defaults on 644 (rw-r--r--). You would need to chmod 666 this file prior to editting it.
+
+<img src="media/export-adb-socket-1.png" height="160">
+
+Add the line above inside .bashrc using your preferred editor
+
+ **DO NOT** replace the file. Simply append to the end of .bashrc
+
+<img src="media/export-adb-socket-2.png" height="480">
+
+Verify that it has been saved using `cat ~/.bashrc` . Then chmod 644 it back.
+
+<img src="media/export-adb-socket-3.png" height="240">
+
 
 ## 8. Run adb as usual. 
 
